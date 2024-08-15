@@ -3,10 +3,11 @@ import { connectDb } from "./config/db.js";
 import cors from "cors";
 import dotenv from "dotenv";
 import authroutes from "./routes/authRoutes.js";
-import profileroutes from "./routes/ProfileRoutes.js";
-import TributeRoutes from "./routes/TributeRoutes.js";
-import userRoutes from "./routes/userRoutes.js";
-import adminRoutes from "./routes/adminRoutes.js";
+import cardRoutes from "./routes/cardRoutes.js";
+// import profileroutes from "./routes/ProfileRoutes.js";
+// import TributeRoutes from "./routes/TributeRoutes.js";
+// import userRoutes from "./routes/userRoutes.js";
+// import adminRoutes from "./routes/adminRoutes.js";
 import http from "http";
 import { Server } from "socket.io";
 import { setupSocket } from "./sockets.js";
@@ -24,6 +25,9 @@ app.use(express.json());
 
 // -----------------------------------------------Auth routes-------------------------------------------------
 app.use("/api/auth/", authroutes);
+
+// -----------------------------------------------Card routes-------------------------------------------------
+app.use("/api/card/", cardRoutes);
 
 // ------------------------------------------db connection--------------------------------------------
 

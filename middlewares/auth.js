@@ -2,7 +2,7 @@ import Jwt from "jsonwebtoken";
 import userModel from "../models/userModel.js";
 // import ErrorHandler from "../utils/errorHandle.js";
 
-const userAuth = async (req, res, next) => {
+const userAuth = async (req, res, next)=>{
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
