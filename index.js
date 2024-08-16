@@ -23,6 +23,12 @@ app.use("/public/images", express.static("public/images"));
 
 app.use(express.json());
 
+// -----------------------------------------------test routes-------------------------------------------------
+
+app.get("/", (req, res) => {
+  return res.send({ message: "Api working" });
+});
+
 // -----------------------------------------------Auth routes-------------------------------------------------
 app.use("/api/auth/", authroutes);
 

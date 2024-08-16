@@ -182,6 +182,9 @@ let cardModel = new mongoose.Schema({
   contactBgImage: {
     type: String,
   },
+  rsvpBgImage: {
+    type: String,
+  },
 });
 
 export default mongoose.model("Cards", cardModel);
