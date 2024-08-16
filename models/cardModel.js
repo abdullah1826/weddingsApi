@@ -39,6 +39,11 @@ const bridalPersonsSchema = new mongoose.Schema({
   image: { type: String, default: "" },
 });
 
+const registerySchema = new mongoose.Schema({
+  title: { type: String, default: "" },
+  url: { type: String, default: "" },
+});
+
 let cardModel = new mongoose.Schema({
   userId: {
     type: String,
@@ -183,6 +188,15 @@ let cardModel = new mongoose.Schema({
     type: String,
   },
   rsvpBgImage: {
+    type: String,
+  },
+  registries: {
+    type: [registerySchema],
+  },
+  registeryTitle: {
+    type: String,
+  },
+  registeryDescription: {
     type: String,
   },
 });
