@@ -103,6 +103,7 @@ let cardModel = new mongoose.Schema({
   },
   accomodationBackground: {
     type: String,
+    default: "",
   },
 
   placesWeLove: {
@@ -177,27 +178,38 @@ let cardModel = new mongoose.Schema({
   },
   bridalBgImg: {
     type: String,
+    default: "",
   },
   itineraryBg: {
     type: String,
+    default: "",
   },
   faqImage: {
     type: String,
+    default: "",
   },
   contactBgImage: {
     type: String,
+    default: "",
   },
   rsvpBgImage: {
     type: String,
+    default: "",
   },
   registries: {
     type: [registerySchema],
   },
   registeryTitle: {
     type: String,
+    default: "",
   },
   registeryDescription: {
     type: String,
+    default: "",
+  },
+  textColor: {
+    type: String,
+    default: "",
   },
 });
 
