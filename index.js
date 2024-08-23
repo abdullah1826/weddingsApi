@@ -15,7 +15,16 @@ import { setupSocket } from "./sockets.js";
 dotenv.config();
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: "*", // Replace with your frontend origin
+    methods: ["GET", "POST", "UPDATE"], // Allow specific methods
+    allowedHeaders: ["Content-Type"], // Allow specific headers
+    pingTimeout: 60000, // How long without a pong packet to consider the connection closed (in ms)
+    pingInterval: 25000,
+    // credentials: true,
+  },
+});
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors({ origin: "*" }));

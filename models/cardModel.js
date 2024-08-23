@@ -128,9 +128,13 @@ let cardModel = new mongoose.Schema({
   },
   order: {
     type: [Number],
-    default: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    default: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
   },
   hidebanner: {
+    type: Boolean,
+    default: false,
+  },
+  hideDetails: {
     type: Boolean,
     default: false,
   },
@@ -210,6 +214,25 @@ let cardModel = new mongoose.Schema({
   textColor: {
     type: String,
     default: "",
+  },
+  registryBg: {
+    type: String,
+    default: "",
+  },
+  seeFavouriteButtonDesc: {
+    type: String,
+    default: "",
+  },
+  viewHotelsButtonDesc: {
+    type: String,
+    default: "",
+  },
+  venueMapButtonDesc: {
+    type: String,
+    default: "",
+  },
+  detailImages: {
+    type: [String],
   },
 });
 

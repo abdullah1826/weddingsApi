@@ -2,6 +2,8 @@ import userModel from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import Jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
+import { catchAsyncError } from "../middlewares/catchAsyncError.js";
+import ErrorHandler from "../utils/ErrorHandler.js";
 
 const transporter = nodemailer.createTransport({
   port: 465, // true for 465, false for other ports
@@ -14,133 +16,96 @@ const transporter = nodemailer.createTransport({
   secure: true,
 });
 
-export let SignupController = async (req, res, next) => {
-  try {
-    if (!req.body.email) {
-      return res
-        .status(401)
-        .send({ status: false, msg: "Email field is required" });
-    }
-    if (!req.body.password) {
-      return res
-        .status(401)
-        .send({ status: false, msg: "Password field is required" });
-    }
-
-    let userExist = await userModel.findOne({ email: req.body.email });
-
-    if (userExist) {
-      return res
-        .status(401)
-        .send({ status: false, msg: "This email is already registered" });
-    }
-
-    const salt = await bcrypt.genSalt(10);
-    let bcryptpassword = await bcrypt.hash(req.body.password, salt);
-
-    let newUser = await userModel.create({
-      ...req.body,
-      password: bcryptpassword,
-    });
-
-    return res
-      .status(200)
-      .send({ status: true, msg: "Account created successfuly" });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).send({
-      status: false,
-      msg: "Something went wrong",
-      error,
-    });
+export let SignupController = catchAsyncError(async (req, res, next) => {
+  if (!req.body.email) {
+    next(new ErrorHandler("Email field is required", 400));
   }
-};
+  if (!req.body.password) {
+    next(new ErrorHandler("Password field is required", 400));
+  }
 
-export let SigninController = async (req, res, next) => {
-  try {
-    if (!req.body.email) {
-      return res.send({ status: false, msg: "All fields are required" });
-    }
-    if (!req.body.password) {
-      return res.send({ status: false, msg: "All fields are required" });
-    }
+  let userExist = await userModel.findOne({ email: req.body.email });
 
-    let userExist = await userModel.findOne({ email: req.body.email });
+  if (userExist) {
+    next(new ErrorHandler("This email is already registered", 400));
+  }
 
-    if (!userExist) {
-      return res.send({ status: false, msg: "User not found" });
-    }
+  const salt = await bcrypt.genSalt(10);
+  let bcryptpassword = await bcrypt.hash(req.body.password, salt);
 
-    let isMatch = bcrypt.compare(req.body.password, userExist.password);
+  let newUser = await userModel.create({
+    ...req.body,
+    password: bcryptpassword,
+  });
 
-    if (!isMatch) {
-      return res.send({ status: false, msg: "Wrong credentials!" });
-    }
+  return res
+    .status(200)
+    .send({ status: true, msg: "Account created successfuly" });
+});
 
-    let theToken = Jwt.sign({ userId: userExist._id }, "mySecret", {
+export let SigninController = catchAsyncError(async (req, res, next) => {
+  if (!req.body.email || !req.body.password) {
+    next(new ErrorHandler("All fields are required", 400));
+  }
+
+  let userExist = await userModel.findOne({ email: req.body.email });
+
+  if (!userExist) {
+    next(new ErrorHandler("User not found", 404));
+  }
+
+  let isMatch = bcrypt.compare(req.body.password, userExist.password);
+
+  if (!isMatch) {
+    next(new ErrorHandler("Wrong credentials!", 400));
+  }
+
+  let theToken = Jwt.sign({ userId: userExist._id }, "mySecret", {
+    expiresIn: "1y",
+  });
+
+  return res.status(200).send({
+    status: true,
+    msg: "Login successfuly",
+    token: theToken,
+    user: userExist,
+  });
+});
+
+export let GoogleAuthController = catchAsyncError(async (req, res, next) => {
+  if (!req.body.email) {
+    next(new ErrorHandler("Email field is required", 400));
+  }
+  let userExist = await userModel.findOne({ email: req.body.email });
+
+  if (userExist) {
+    const theToken = Jwt.sign({ userId: userExist._id }, "mySecret", {
       expiresIn: "1y",
     });
-
-    return res.status(200).send({
-      status: true,
-      msg: "Login successfuly",
-      token: theToken,
-      user: userExist,
-    });
-  } catch (error) {
-    return res.status(500).send({
-      status: false,
-      msg: "internal server error",
-      error,
-    });
-  }
-};
-
-export let GoogleAuthController = async (req, res, next) => {
-  try {
-    if (!req.body.email) {
-      return res
-        .status(200)
-        .send({ status: false, msg: "Email field is required" });
-    }
-
-    let userExist = await userModel.findOne({ email: req.body.email });
-
-    if (userExist) {
-      const theToken = Jwt.sign({ userId: userExist._id }, "mySecret", {
-        expiresIn: "1y",
-      });
-      return res.status(200).send({
-        status: true,
-        msg: "Authenticated by google successfuly",
-        token: theToken,
-        user: userExist,
-      });
-    }
-
-    let newUser = await userModel.create({
-      ...req.body,
-      password: "not-require",
-    });
-
-    let theToken = Jwt.sign({ userId: newUser._id }, "mySecret", {
-      expiresIn: "1y",
-    });
-
     return res.status(200).send({
       status: true,
       msg: "Authenticated by google successfuly",
       token: theToken,
-      user: newUser,
-    });
-  } catch (error) {
-    return res.status(500).send({
-      status: false,
-      msg: "Something went wrong",
-      error,
+      user: userExist,
     });
   }
-};
+
+  let newUser = await userModel.create({
+    ...req.body,
+    password: "not-require",
+  });
+
+  let theToken = Jwt.sign({ userId: newUser._id }, "mySecret", {
+    expiresIn: "1y",
+  });
+
+  return res.status(200).send({
+    status: true,
+    msg: "Authenticated by google successfuly",
+    token: theToken,
+    user: newUser,
+  });
+});
 
 export const forgotPassword = async (req, res) => {
   try {

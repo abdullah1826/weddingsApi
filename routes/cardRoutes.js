@@ -6,6 +6,7 @@ import {
 } from "../controllers/CradController.js";
 import userAuth from "../middlewares/auth.js";
 import {
+  deleteRsvp,
   getRsvpDataByUserId,
   SubmitRsvpController,
 } from "../controllers/rsvpController.js";
@@ -19,6 +20,7 @@ router.get("/getCard/:cardId", getCardData);
 // rsvp
 router.post("/submitRsvp", SubmitRsvpController);
 router.get("/getRsvp", userAuth, getRsvpDataByUserId);
+router.post("/deleteRsvp", deleteRsvp);
 // router.post("/googleAuth", GoogleAuthController);
 // router.post("/forgetPassword", forgotPassword);
 // router.post("/resetPassword", resetPassword);
