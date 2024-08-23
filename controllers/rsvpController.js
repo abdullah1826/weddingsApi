@@ -80,3 +80,23 @@ export const deleteRsvp = catchAsyncError(async (req, res, next) => {
     msg: "Deleted successfully",
   });
 });
+
+export const getRsvpDataById = catchAsyncError(async (req, res, next) => {
+  const userId = req.params.id;
+
+  if (!userId) {
+    return res
+      .status(400)
+      .send({ status: false, message: "rsvp id is required" });
+  }
+
+  const rsvp = await rsvpModel.findById(userId);
+  if (!rsvp) {
+    // next(new ErrorHandler("User not found", 404));
+    return res.status(400).send({ status: false, message: "rsvp not found" });
+  }
+  return res.status(200).send({
+    status: true,
+    data: rsvp,
+  });
+});
