@@ -11,6 +11,7 @@ import cardRoutes from "./routes/cardRoutes.js";
 import http from "http";
 import { Server } from "socket.io";
 import { setupSocket } from "./sockets.js";
+import ErrorMiddleware from "./middlewares/errorMiddleware.js";
 
 dotenv.config();
 const app = express();
@@ -50,6 +51,8 @@ connectDb();
 
 // ------------------------------------------Socket.io connection--------------------------------------------
 setupSocket(io);
+
+app.use(ErrorMiddleware);
 
 // ------------------------------------------running server--------------------------------------------
 

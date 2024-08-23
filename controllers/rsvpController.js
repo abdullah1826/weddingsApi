@@ -94,15 +94,15 @@ export const getRsvpDataById = catchAsyncError(async (req, res, next) => {
   const rsvp = await rsvpModel.findById(userId);
 
   if (!rsvp) {
-    // next(new ErrorHandler("User not found", 404));
-    return res.status(400).send({ status: false, message: "rsvp not found" });
+    next(new ErrorHandler("rsvp not found", 404));
+    // return res.status(400).send({ status: false, message: "rsvp not found" });
   }
 
   const card = await cardModel.findOne({ userId: rsvp?.userId });
 
   if (!card) {
-    // next(new ErrorHandler("User not found", 404));
-    return res.status(404).send({ status: false, message: "event not found" });
+    next(new ErrorHandler("event not found", 404));
+    // return res.status(404).send({ status: false, message: "event not found" });
   }
 
   return res.status(200).send({
