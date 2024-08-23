@@ -2,6 +2,7 @@ import { catchAsyncError } from "../middlewares/catchAsyncError.js";
 import rsvpModel from "../models/rsvpModel.js";
 import userModel from "../models/userModel.js";
 import ErrorHandler from "../utils/ErrorHandler.js";
+import cardModel from "../models/cardModel.js";
 
 export let SubmitRsvpController = catchAsyncError(async (req, res, next) => {
   if (!req.body.fName) {
@@ -91,12 +92,31 @@ export const getRsvpDataById = catchAsyncError(async (req, res, next) => {
   }
 
   const rsvp = await rsvpModel.findById(userId);
+
   if (!rsvp) {
     // next(new ErrorHandler("User not found", 404));
     return res.status(400).send({ status: false, message: "rsvp not found" });
   }
+
+  const card = await cardModel.findOne({ userId: rsvp?.userId });
+
+  if (!card) {
+    // next(new ErrorHandler("User not found", 404));
+    return res.status(404).send({ status: false, message: "event not found" });
+  }
+
   return res.status(200).send({
     status: true,
-    data: rsvp,
+    data: {
+      fName: rsvp?.fName,
+      lName: rsvp?.lastName,
+      email: rsvp?.mail,
+      phone: rsvp?.phone,
+      bgImg: card?.headerImage,
+      status: rsvp?.AttendingStatus,
+      guest: rsvp?.numberOfGuests,
+      date: card?.eventDate,
+      eventId: card?._id,
+    },
   });
 });
