@@ -24,6 +24,13 @@ let rsvpModel = new mongoose.Schema({
   AttendingStatus: {
     type: String,
   },
+  numberOfChilds: {
+    type: Number,
+    default: 0,
+  },
+  guestId: {
+    type: String,
+  },
 });
 
 export default mongoose.model("Rsvp", rsvpModel);
