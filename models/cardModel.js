@@ -65,6 +65,10 @@ let cardModel = new mongoose.Schema({
     type: String,
     default: "",
   },
+  time: {
+    type: String,
+    default: "",
+  },
   location: {
     type: String,
     default: "",

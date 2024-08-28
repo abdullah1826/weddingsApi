@@ -152,7 +152,7 @@ export const getRsvpDataById = catchAsyncError(async (req, res, next) => {
       date: card?.eventDate,
       eventId: card?._id,
       website: `https://welcomepass.netlify.app/${card?._id}`,
-      time: card?.itinerary?.[0] ? card?.itinerary?.[0]?.time : "",
+      time: card?.time || "",
       groom_bride: `${card?.groomName} & ${card?.brideName}`,
       location: card?.location,
     },
