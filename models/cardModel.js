@@ -16,11 +16,13 @@ const eventSchema = new mongoose.Schema({
 const hotelSchema = new mongoose.Schema({
   name: { type: String, default: "" },
   description: { type: String, default: "" },
+  bookingUrl: { type: String, default: "" },
 });
 
 const placeSchema = new mongoose.Schema({
   name: { type: String, default: "" },
   description: { type: String, default: "" },
+  bookingUrl: { type: String, default: "" },
 });
 
 const faqSchema = new mongoose.Schema({
@@ -58,6 +60,10 @@ let cardModel = new mongoose.Schema({
     default: "",
   },
   welcomeText: {
+    type: String,
+    default: "",
+  },
+  logo: {
     type: String,
     default: "",
   },
