@@ -154,6 +154,8 @@ export const getRsvpDataById = catchAsyncError(async (req, res, next) => {
       website: `https://card.thewelcomepass.com/${card?._id}`,
       time: card?.time || "",
       groom_bride: `${card?.groomName} & ${card?.brideName}`,
+      groom: card?.groomName,
+      bride: card?.brideName,
       location: card?.location,
       rsvp,
     },
