@@ -138,6 +138,13 @@ export const getRsvpDataById = catchAsyncError(async (req, res, next) => {
     next(new ErrorHandler("event not found", 404));
     // return res.status(404).send({ status: false, message: "event not found" });
   }
+  let rsvp2;
+  if (rsvp?.numberOfGuests === 2) {
+    rsvp2 = await rsvpModel.findOne({
+      guestId: rsvp?.guestId,
+      _id: { $ne: rsvp?._id },
+    });
+  }
 
   return res.status(200).send({
     status: true,
@@ -157,7 +164,13 @@ export const getRsvpDataById = catchAsyncError(async (req, res, next) => {
       groom: card?.groomName,
       bride: card?.brideName,
       location: card?.location,
-      rsvp,
+      rsvp: {
+        ...rsvp,
+        fName2: rsvp2?.fName || "",
+        lName2: rsvp2?.lastName || "",
+        email2: rsvp2?.mail || "",
+        phone2: rsvp2?.phone || "",
+      },
     },
   });
 });
